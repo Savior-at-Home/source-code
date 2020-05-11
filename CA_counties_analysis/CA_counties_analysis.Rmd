@@ -1,0 +1,92 @@
+---
+title: "datafest_counties_percentage_change"
+author: "Wanxin Xie"
+date: "5/10/2020"
+output: html_document
+---
+```{r}
+library(tidyverse)
+```
+
+```{r}
+# import all CA counties AQI csv files
+dataFiles <- lapply(Sys.glob("ad_viz_plotval_data-*.csv"), read.csv)
+```
+
+```{r}
+# AQI percentage change
+f <- as.data.frame(dataFiles[1]) 
+f 
+f_clean <- f  %>% filter(Source =='AirNow') %>% arrange(Date)
+f_clean_ <- f_clean[,c('Date','DAILY_AQI_VALUE')]
+f_unique <- distinct(f_clean_, Date, .keep_all = TRUE)
+jan3 <- which(f_unique["Date"] == "01/03/2020")
+feb6 <- which(f_unique["Date"] == "02/06/2020")
+march31 <- which(f_unique["Date"] == "03/31/2020")
+may1 <- which(f_unique["Date"] == "05/01/2020")
+
+aqi_av1 <- median(f_unique[jan3[length(jan3)]:feb6[length(feb6)],'DAILY_AQI_VALUE'])
+aqi_av2 <- median(f_unique[march31[length(march31)]:may1[length(may1)],'DAILY_AQI_VALUE'])
+percent_change <- (aqi_av2-aqi_av1)/aqi_av1
+percent_change
+f_clean['COUNTY'][1,1]
+AQI_CA_counties <- data.frame(County = f_clean['COUNTY'][1,1] ,percent_change)
+
+for (i in c(2,4:12,15,17,18,20:29,31:35,37,39:44)){
+f <- as.data.frame(dataFiles[i]) 
+f 
+f_clean <- f  %>% filter(Source =='AirNow') %>% arrange(Date)
+f_clean_ <- f_clean[,c('Date','DAILY_AQI_VALUE')]
+f_unique <- distinct(f_clean_, Date, .keep_all = TRUE)
+jan3 <- which(f_unique["Date"] == "01/03/2020")
+feb6 <- which(f_unique["Date"] == "02/06/2020")
+march31 <- which(f_unique["Date"] == "03/31/2020")
+may1 <- which(f_unique["Date"] == "05/01/2020")
+
+aqi_av1 <- median(f_unique[jan3[length(jan3)]:feb6[length(feb6)],'DAILY_AQI_VALUE'])
+aqi_av2 <- median(f_unique[march31[length(march31)]:may1[length(may1)],'DAILY_AQI_VALUE'])
+percent_change <- (aqi_av2-aqi_av1)/aqi_av1
+percent_change
+f_clean['COUNTY'][1,1]
+AQI_CA_counties <- rbind(AQI_CA_counties,data.frame(County = f_clean['COUNTY'][1,1] ,percent_change))
+}
+```
+
+
+```{r}
+AQI_CA_counties_final <- distinct(AQI_CA_counties, County, .keep_all = TRUE)
+AQI_CA_counties_final
+
+f <- as.data.frame(dataFiles[16]) 
+f 
+f_clean <- f  %>% arrange(Date)
+f_clean_ <- f_clean[,c('Date','DAILY_AQI_VALUE')]
+f_unique <- distinct(f_clean_, Date, .keep_all = TRUE)
+f_unique
+jan3 <- which(f_unique["Date"] == "01/03/2020")
+feb6 <- which(f_unique["Date"] == "02/03/2020")
+march31 <- which(f_unique["Date"] == "03/31/2020")
+may1 <- which(f_unique["Date"] == "04/30/2020")
+
+aqi_av1 <- median(f_unique[jan3[length(jan3)]:feb6[length(feb6)],'DAILY_AQI_VALUE'])
+aqi_av2 <- median(f_unique[march31[length(march31)]:may1[length(may1)],'DAILY_AQI_VALUE'])
+percent_change <- (aqi_av2-aqi_av1)/aqi_av1
+percent_change
+f_clean['COUNTY'][1,1]
+AQI_CA_counties <- rbind(AQI_CA_counties,data.frame(County = f_clean['COUNTY'][1,1] ,percent_change))
+
+```
+
+```{r}
+write.csv(AQI_CA_counties, )
+write.csv(AQI_CA_counties_final, file="AQI_CA_counties_final")
+```
+
+```{r}
+# t test
+aqi_av <- read.csv("aqi_av_final.txt")
+aqi_av
+t.test(aqi_av$aqi_1, aqi_av$aqi_2, alternative = "greater", paired = TRUE)
+```
+
+
