@@ -1,0 +1,2 @@
+Here are the 52 raw data files that I used to do the data cleaning. This is the link to the original data.
+https://www.epa.gov/outdoor-air-quality-data/download-daily-data
