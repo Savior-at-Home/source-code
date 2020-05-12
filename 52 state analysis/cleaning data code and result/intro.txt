@@ -1,2 +1,8 @@
 This is the code that I use to clean the raw data and the resulting csv file. The following are the tableau visualization 
 that I made. 
+Air quality percent change: 
+https://public.tableau.com/profile/violet.guo#!/vizhome/airqualitypercentagechange/airqualitypercentagechange?publish=yes
+
+
+Air quality base and change: 
+https://public.tableau.com/profile/violet.guo#!/vizhome/airqualitybaseandchange/airqualitybeforeandafter?publish=yes
