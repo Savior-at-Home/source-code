@@ -1,0 +1,48 @@
+---
+title: "Untitled"
+author: "Qing Shi"
+date: "4/25/2020"
+output: html_document
+---
+
+```{r, message = FALSE}
+library(dplyr)
+# world <- read.csv("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv?cachebust=911a386b6c9c230f")
+# sum(nlevels(world$sub_region_1[world$country_region == "United States"]))
+# levels(world$country_region)
+# head(world[world$country_region == "United States",], n = 100)
+world <- read.csv("./src/Global_Mobility_Report.csv")
+nrow(world)
+nrow(world[world$country_region == "United States",])
+head(world[world$country_region == "United States",], 100)
+world[[world$country_region == "United States",]]
+head(world[world$sub_region_1 == "California" & world$sub_region_2 != "",]) # up to county info
+View(world)
+apple <- read.csv("./src/applemobilitytrends-2020-05-07.csv")
+```
+
+```{r}
+ny <- read.csv("./src/NY-PM2.5.csv")
+ny %>% arrange(Date)
+
+simple_ny <- select(ny, Date, COUNTY, Daily.Mean.PM2.5.Concentration, STATE) # 里面其实也有aqi value
+
+grouped <- group_by(ny, Date, sum)
+
+median_ny <- simple_ny %>% group_by(Date) %>% summarize(PM2.5.Median = median(Daily.Mean.PM2.5.Concentration))
+median(simple_ny$Daily.Mean.PM2.5.Concentration[simple_ny$Date == "01/02/2020"])
+plot(median ~ Date, data = median_ny)
+abline(median ~ Date, data = median_ny)
+# 这个是
+baseline <- median_ny[3:37,]
+Weekdays <- rep(c("Fri", "Sat", "Sun", "Mon", "Tue", "Wed", "Thu"), 5)
+final <- cbind(baseline, Weekdays)
+median <- final %>% group_by(Weekdays) %>% summarize(median = median(PM2.5.Median))
+
+levels(ny$Date)
+```
+
+```{r}
+ca <- read.csv("./src/CA-PM2.5.csv")
+
+```
