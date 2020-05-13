@@ -1,0 +1,17 @@
+---
+title: "52-state-transit-change-median"
+author: "Qing Shi"
+date: "5/12/2020"
+output: html_document
+---
+
+
+```{r message = FALSE}
+library(dplyr)
+world <- read.csv("./src/Global_Mobility_Report.csv")
+us <- world %>% filter(country_region == "United States")
+transit_change_median_by_state <- us %>%  
+  group_by(sub_region_1) %>% 
+  summarize(median_transit = median(transit_stations_percent_change_from_baseline, na.rm = TRUE))
+write.csv(transit_change_median_by_state, "transit_change_median_by_state.csv")
+```
