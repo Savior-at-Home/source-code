@@ -16,7 +16,7 @@ library("lubridate")
 
 ```{r}
 #create the first line for our final result 
-A_data <- read.csv("ad_viz_plotval_data.csv", stringsAsFactors = F)
+A_data <- read.csv("../raw_data/ad_viz_plotval_data.csv", stringsAsFactors = F)
 A_data_filtered <- A_data %>% filter(Source == "AirNow") %>% select(Date, DAILY_AQI_VALUE, STATE, Site.Name)
 A_data_data_spread <- A_data_filtered %>% spread(Site.Name, DAILY_AQI_VALUE)
 A_data_base <- A_data_data_spread[1:37, ]
@@ -39,7 +39,7 @@ final
 ```{r}
 for (i in 1:50){
 # set the file name to be read in to run the loop
-file_name <- paste("ad_viz_plotval_data (" , toString(i) , ").csv", sep="")
+file_name <- paste("../raw_data/ad_viz_plotval_data (" , toString(i) , ").csv", sep="")
 A_data <- read.csv(file_name, stringsAsFactors = F)
 A_data$Date <- as.Date(A_data$Date, "%m/%d/%Y")
 
