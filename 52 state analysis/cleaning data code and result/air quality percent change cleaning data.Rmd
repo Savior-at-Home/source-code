@@ -1,0 +1,108 @@
+---
+title: "data fest"
+author: "Violet Guo"
+date: "5/10/2020"
+output: html_document
+---
+```{r}
+library(tidyverse)
+
+```
+
+```{r}
+library("lubridate")
+```
+
+
+```{r}
+#create the first line for our final result 
+A_data <- read.csv("ad_viz_plotval_data.csv", stringsAsFactors = F)
+A_data_filtered <- A_data %>% filter(Source == "AirNow") %>% select(Date, DAILY_AQI_VALUE, STATE, Site.Name)
+A_data_data_spread <- A_data_filtered %>% spread(Site.Name, DAILY_AQI_VALUE)
+A_data_base <- A_data_data_spread[1:37, ]
+A_data_change <- A_data_data_spread[81:127,]
+resulting_vec <- numeric(0)
+for (i in A_data_base[, 3:ncol(A_data_base)]){
+  resulting_vec <- c(resulting_vec, i)
+}
+base <- median(resulting_vec, na.rm=T)
+resulting_vec <- numeric(0)
+for (i in A_data_change[, 3:ncol(A_data_base)]){
+  resulting_vec <- c(resulting_vec, i)
+}
+change <- median(resulting_vec, na.rm=T)
+percentage_change <- (change-base)/base
+final<-data.frame(state="Alabama", baseline = base, change = change, percent = percentage_change)
+final
+```
+
+```{r}
+for (i in 1:50){
+# set the file name to be read in to run the loop
+file_name <- paste("ad_viz_plotval_data (" , toString(i) , ").csv", sep="")
+A_data <- read.csv(file_name, stringsAsFactors = F)
+A_data$Date <- as.Date(A_data$Date, "%m/%d/%Y")
+
+#check whether AQS or AirNow contain all the base data and change data that we need 
+A_filter1 <- A_data %>% filter(Date <= as.Date("2020-02-06"))
+A_filter2 <- A_data %>% filter(Date >= as.Date("2020-03-21"))
+A_checkpoint1_airnow <- sum(A_filter1$Source == "AirNow")==0
+A_checkpoint2_airnow <- sum(A_filter2$Source == "AirNow")==0
+A_checkpoint1_aqs <- sum(A_filter1$Source == "AQS")==0
+A_checkpoint2_aqs <- sum(A_filter2$Source == "AQS")==0
+
+#We use the checkpoints to check whether we would filter out AirNow's data as sources or AQS
+if(!A_checkpoint1_airnow & !A_checkpoint2_airnow){
+  A_data_filtered <- A_data %>% filter(Source == "AirNow") %>% select(Date, DAILY_AQI_VALUE, STATE, Site.Name)
+}else if(!A_checkpoint1_aqs & !A_checkpoint2_aqs)
+{
+  A_data_filtered <- A_data %>% filter(Source == "AQS") %>% select(Date, DAILY_AQI_VALUE, STATE, Site.Name)
+}else if(A_checkpoint1_airnow & !A_checkpoint1_aqs & !A_checkpoint2_airnow & A_checkpoint2_aqs) #there is data as base for aqs and change for airnow
+{
+  A_data1 <- A_data %>% filter(Source == "AQS" & Date <= as.Date("2020-02-06")) 
+  A_data2 <- A_data %>% filter(Source == "AirNow" & Date >= as.Date("2020-03-21"))
+  A_data_filtered <- rbind(A_data1, A_data2)
+  A_data_filtered <- A_data_filtered %>% select(Date, DAILY_AQI_VALUE, STATE, Site.Name)
+}else if(!A_checkpoint1_airnow & A_checkpoint1_aqs & A_checkpoint2_airnow & !A_checkpoint2_aqs) # there is data as base for airnow and change for aqs
+{
+  A_data1 <- A_data %>% filter(Source == "AirNow" & Date <= as.Date("2020-02-06")) 
+  A_data2 <- A_data %>% filter(Source == "AQS" & Date >= as.Date("2020-03-21"))
+  A_data_filtered <- rbind(A_data1, A_data2)
+  A_data_filtered <- A_data_filtered %>% select(Date, DAILY_AQI_VALUE, STATE, Site.Name)
+}else if(length(which(A_data$Source=="AQS"))==0)
+{
+  A_data_filtered <- A_data %>% filter(Source == "AirNow") %>% select(Date, DAILY_AQI_VALUE, STATE, Site.Name)
+}else
+{
+  A_data_filtered <- A_data %>% filter(Source == "AirNow") %>% select(Date, DAILY_AQI_VALUE, STATE, Site.Name)
+}
+
+A_data_filtered$Date <- as.Date(A_data_filtered$Date, "%m/%d/%Y")
+A_data_base_data <- A_data_filtered %>% filter( Date <= as.Date("2020-02-06"))
+base <- median(A_data_base_data$DAILY_AQI_VALUE, na.rm=T)
+A_data_change_data <- A_data_filtered %>% filter(Date >= as.Date("2020-03-21"))
+change <- median(A_data_change_data$DAILY_AQI_VALUE, na.rm=T)
+percentage_change <- (change-base)/base
+new<-data.frame(state=A_data_filtered[1, "STATE"], baseline = base, change = change, percent = percentage_change)
+final <- rbind(final, new)
+}
+```
+
+```{r}
+final
+```
+
+```{r}
+write.csv(final, "state_percentage_change.csv")
+```
+```{r}
+data <- read.csv("state_percentage_change.csv")
+data
+```
+
+
+```{r}
+t.test(data$baseline, data$change, pair=TRUE, alternative = "greater")
+```
+
+
