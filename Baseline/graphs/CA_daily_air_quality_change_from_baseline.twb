@@ -19,7 +19,7 @@
       <connection class='federated'>
         <named-connections>
           <named-connection caption='CA_daily_air_quality_change_from_baseline' name='textscan.1s878vp0tx44hr1avvxd618y689n'>
-            <connection class='textscan' directory='/Users/qingshi/Desktop/datafest/Baseline' filename='CA_daily_air_quality_change_from_baseline.csv' password='' server='' />
+            <connection class='textscan' directory='/Users/qingshi/Desktop/datafest/github/source-code/Baseline/graphs' filename='CA_daily_air_quality_change_from_baseline.csv' password='' server='' />
           </named-connection>
         </named-connections>
         <_.fcp.ObjectModelEncapsulateLegacy.false...relation connection='textscan.1s878vp0tx44hr1avvxd618y689n' name='CA_daily_air_quality_change_from_baseline.csv' table='[CA_daily_air_quality_change_from_baseline#csv]' type='table'>
@@ -151,7 +151,7 @@
       <layout-options>
         <title>
           <formatted-text>
-            <run>CA Daily Air Quality Change from Baseline</run>
+            <run>CA Daily Air Quality Index Change from Baseline</run>
           </formatted-text>
         </title>
       </layout-options>

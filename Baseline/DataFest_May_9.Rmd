@@ -10,7 +10,8 @@ library(dplyr)
 world <- read.csv("./src/Global_Mobility_Report.csv")
 us <- world %>% filter(country_region == "United States")
 ```
-#### PM2.5 for NY
+
+#### AQI for NY
 ```{r message = FALSE}
 library(dplyr)
 Weekdays <- rep(c("Fri", "Sat", "Sun", "Mon", "Tue", "Wed", "Thu"), 5)
@@ -18,18 +19,18 @@ Weekdays <- rep(c("Fri", "Sat", "Sun", "Mon", "Tue", "Wed", "Thu"), 5)
 ny <- read.csv("./src/NY-PM2.5.csv")
 ny <- ny %>% arrange(Date) # actually contains AQI, if want to add/change later
 
-# select only date, county, pm2.5, state (all ny)
+# select only date, county, AQI, state (all ny)
 simple_ny <- ny %>%  select(Date, COUNTY, DAILY_AQI_VALUE, STATE) 
 
-# median pm2.5 value by date
-median_ny <- simple_ny %>% group_by(Date) %>% summarize(PM2.5.Median = median(DAILY_AQI_VALUE))
+# median AQI value by date
+median_ny <- simple_ny %>% group_by(Date) %>% summarize(AQI.Median = median(DAILY_AQI_VALUE))
 
 # dates and values that would be considered to find baseline
 baseline_ny <- median_ny[3:37,]
 baseline_ny <- cbind(baseline_ny, Weekdays)
 
 # seven median values for ny
-baseline_ny_median <- baseline_ny %>% group_by(Weekdays) %>% summarize(median = median(PM2.5.Median))
+baseline_ny_median <- baseline_ny %>% group_by(Weekdays) %>% summarize(median = median(AQI.Median))
 
 baseline_ny_median <- baseline_ny_median[c(3,4,2,6,7,5,1),]
 
@@ -40,8 +41,8 @@ weekdays <- rep(c("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"), 6)
 ny_after <- cbind(ny_after, baseline_ny_median)
 
 # percent change from baseline
-change_from_baseline <- ny_after %>% mutate(Change_from_Baseline = (PM2.5.Median - baseline_ny_median) / baseline_ny_median * 100)
-plot(change_from_baseline$Change_from_Baseline, col = "blue")
+ny_change_from_baseline <- ny_after %>% mutate(Change_from_Baseline = (AQI.Median - baseline_ny_median) / baseline_ny_median * 100)
+plot(ny_change_from_baseline$Change_from_Baseline, col = "blue")
 ```
 
 #### Mobility for NY
@@ -56,28 +57,47 @@ ny_mobility <- ny_mobility[36:77,]
 plot(1:42, change_from_baseline$Change_from_Baseline, col = "blue", type = "l", ylim = c(-100, 50))
 points(ny_mobility$transit_stations_percent_change_from_baseline, col = "red", type = "l")
 abline(h = 0, col = "gray", lty = 2)
-legend("topleft", legend = c("Mobility Change", "PM2.5 change"), col = c("blue", "red"), lty = 1, cex=0.8)
+legend("topleft", legend = c("Mobility Change", "AQI change"), col = c("blue", "red"), lty = 1, cex=0.8)
 ```
 
-#### PM2.5 for CA
+#### Plot and save the graph (NY)
+```{r}
+# 1. Open pdf file
+pdf("NY-AQI-change-from-baseilne.pdf")
+# 2. Create the plot
+plot(1:42, change_from_baseline$Change_from_Baseline, 
+     col = "blue", type = "l", ylim = c(-100, 50), 
+     xlab = "Days", ylab = "Change from Baseline (%)",
+     main = "NY Mobility Change and AQI Change from Baseline")
+points(ny_mobility$transit_stations_percent_change_from_baseline, col = "red", type = "l")
+abline(h = 0, col = "gray", lty = 2)
+legend("topleft", legend = c("Mobility Change", "AQI change"), col = c("blue", "red"), lty = 1, cex=0.8)
+# 3. Close the file
+dev.off()
+```
+#### Save result to .csv file
+```{r}
+write.csv(ny_change_from_baseline, "NY_daily_air_quality_change_from_baseline.csv")
+```
+#### AQI for CA
 ```{r}
 ca <- read.csv("./src/CA-PM2.5.csv")
 Weekdays <- rep(c("Fri", "Sat", "Sun", "Mon", "Tue", "Wed", "Thu"), 5)
 
 ca <- ca %>% arrange(Date) # actually contains AQI, if want to add/change later
 
-# select only date, county, pm2.5, state (all ca)
-simple_ca <- ca %>%  select(Date, COUNTY, Daily.Mean.PM2.5.Concentration, STATE) 
+# select only date, county, AQI, state (all ca)
+simple_ca <- ca %>%  select(Date, COUNTY, DAILY_AQI_VALUE, STATE) 
 
-# median pm2.5 value by date
-median_ca <- simple_ca %>% group_by(Date) %>% summarize(PM2.5.Median = median(Daily.Mean.PM2.5.Concentration))
+# median AQI value by date
+median_ca <- simple_ca %>% group_by(Date) %>% summarize(AQI.Median = median(DAILY_AQI_VALUE))
 
 # dates and values that would be considered to find baseline
 baseline_ca <- median_ca[3:37,]
 baseline_ca <- cbind(baseline_ca, Weekdays)
 
 # seven median values for ca
-baseline_ca_median <- baseline_ca %>% group_by(Weekdays) %>% summarize(median = median(PM2.5.Median))
+baseline_ca_median <- baseline_ca %>% group_by(Weekdays) %>% summarize(median = median(AQI.Median))
 
 baseline_ca_median <- baseline_ca_median[c(3,4,2,6,7,5,1),]
 
@@ -88,14 +108,14 @@ weekdays <- rep(c("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"), 6)
 ca_after <- cbind(ca_after, baseline_ca_median)
 
 # percent change from baseline
-change_from_baseline <- ca_after %>% mutate(Change_from_Baseline = (PM2.5.Median - baseline_ca_median) / baseline_ca_median * 100)
-plot(change_from_baseline$Change_from_Baseline, col = "blue")
+ca_change_from_baseline <- ca_after %>% mutate(Change_from_Baseline = (AQI.Median - baseline_ca_median) / baseline_ca_median * 100)
+plot(ca_change_from_baseline$Change_from_Baseline, col = "blue")
 ```
 
 #### Mobility for CA
 ```{r}
 # now mobility change
-ca_mobility <- us %>% filter(sub_region_1 == "New York")
+ca_mobility <- us %>% filter(sub_region_1 == "California")
 ca_mobility <- ca_mobility %>% select(sub_region_1, date, transit_stations_percent_change_from_baseline)
 ca_mobility <- ca_mobility %>% group_by(date) %>% summarize(transit_stations_percent_change_from_baseline = median(transit_stations_percent_change_from_baseline, na.rm = TRUE))
 # data from 3.12 to 5.1
@@ -104,10 +124,30 @@ ca_mobility <- ca_mobility[36:77,]
 plot(1:42, change_from_baseline$Change_from_Baseline, col = "blue", type = "l", ylim = c(-100, 50))
 points(ca_mobility$transit_stations_percent_change_from_baseline, col = "red", type = "l")
 abline(h = 0, col = "gray", lty = 2)
-legend("topleft", legend = c("Mobility Change", "PM2.5 change"), col = c("blue", "red"), lty = 1, cex=0.8)
+legend("topleft", legend = c("Mobility Change", "AQI Change"), col = c("blue", "red"), lty = 1, cex=0.8)
 
 plot(change_from_baseline$Change_from_Baseline ~ ca_mobility$transit_stations_percent_change_from_baseline)
 abline(lm(change_from_baseline$Change_from_Baseline ~ ca_mobility$transit_stations_percent_change_from_baseline))
 summary(lm(change_from_baseline$Change_from_Baseline ~ ca_mobility$transit_stations_percent_change_from_baseline))
 ```
 
+#### Plot and save the graph (CA)
+```{r}
+# 1. Open pdf file
+pdf("CA-AQI-change-from-baseilne.pdf")
+# 2. Create the plot
+plot(1:42, ca_change_from_baseline$Change_from_Baseline, 
+     col = "blue", type = "l", ylim = c(-100, 50), 
+     xlab = "Days", ylab = "Change from Baseline (%)",
+     main = "CA Mobility Change and AQI Change from Baseline")
+points(ca_mobility$transit_stations_percent_change_from_baseline, col = "red", type = "l")
+abline(h = 0, col = "gray", lty = 2)
+legend("topleft", legend = c("Mobility Change", "AQI Change"), col = c("blue", "red"), lty = 1, cex=0.8)
+# 3. Close the file
+dev.off()
+```
+
+#### Save result to .csv file
+```{r}
+write.csv(ca_change_from_baseline, "CA_daily_air_quality_change_from_baseline.csv")
+```
