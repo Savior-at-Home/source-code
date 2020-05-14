@@ -6,8 +6,15 @@ Data analysis of air quality change and mobility change in the US during COVID-1
 Team Savior at Home, UCLA DataFest 2020  
 Team member: Bingcui Guo, Wanxin Xie, Qing Shi  
 
-## Inspiration
-Since the outbreak of COVID-19, we’ve been surrounded by horrible news about this global pandemic and its negative influences on various aspects of our lives. Trying to find the positivity in this challenging time, we started our project by wondering if this pandemic brings us any positive change. We began our brainstorming by reflecting on the biggest change in our lives caused by this pandemic. As college students who have to stay at home and study online, we agreed that the reduction of mobility has the most significant impacts on our lives and decided to explore if there are any positive side-effects of the stay-at-home order. After browsing through recent scholarly papers, we were inspired by one research from China, which claims that the reduction of mobility reduced carbon emission by a drastic 25 percent in China. This finding drove us to investigate the mobility change in the US and the corresponding change in air quality before and during the COVID-19 period.  
+## Introduction
+Trying to stay optimistic during this challenging time, we started our project by wondering if this COVID-19 pandemic brings us any positive change. We were inspired by one research which claims that the decrease in mobility reduced carbon emission by a drastic 25 percent in China. This finding drove us to investigate the relationship between the mobility change and the air quality change in the US during the COVID-19 period. 
+
+## Research Questions  
+1. Is there a significant improvement in air quality level in the US before and after the outbreak of COVID-19? 
+2. If there is any change in air quality levels, does the change vary by states? 
+3. Is there a relationship between the mobility change in transit stations and air quality level? 
+4. What are some factors influencing these trends? 
+
 
 ## Methodology
 Our study is based on data analysis from Google COVID-19 community mobility reports and outdoor air quality data from United States Environmental Protection Agency. We used R to clean the data, implemented statistical testing, and used Tableau to visualize our results in order to conduct our analysis. 
