@@ -2,8 +2,7 @@
 
 Data analysis of air quality change and mobility change in the US during COVID-19 pandemic. 
 
-![Team Logo]
-(https://octodex.github.com/images/yaktocat.png)
+![Team-Logo](https://raw.githubusercontent.com/Savior-at-Home/source-code/master/icon.png)
 
 ## Contributor
 Team Savior at Home, UCLA DataFest 2020  
