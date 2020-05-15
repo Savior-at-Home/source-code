@@ -1,0 +1,5 @@
+"Date","Source","Site ID","POC","Daily Mean PM2.5 Concentration","UNITS","DAILY_AQI_VALUE","Site Name","DAILY_OBS_COUNT","PERCENT_COMPLETE","AQS_PARAMETER_CODE","AQS_PARAMETER_DESC","CBSA_CODE","CBSA_NAME","STATE_CODE","STATE","COUNTY_CODE","COUNTY","SITE_LATITUDE","SITE_LONGITUDE"
+"01/04/2020","AQS","060890004","1","27.7","ug/m3 LC","84","Redding - Health Department","1","100.0000","88101","PM2.5 - Local Conditions","39820","Redding, CA","06","California","089","Shasta","40.550130000932","-122.38092"
+"01/10/2020","AQS","060890004","1","4.8","ug/m3 LC","20","Redding - Health Department","1","100.0000","88101","PM2.5 - Local Conditions","39820","Redding, CA","06","California","089","Shasta","40.550130000932","-122.38092"
+"01/16/2020","AQS","060890004","1","2.7","ug/m3 LC","11","Redding - Health Department","1","100.0000","88101","PM2.5 - Local Conditions","39820","Redding, CA","06","California","089","Shasta","40.550130000932","-122.38092"
+"01/28/2020","AQS","060890004","1","7.8","ug/m3 LC","33","Redding - Health Department","1","100.0000","88101","PM2.5 - Local Conditions","39820","Redding, CA","06","California","089","Shasta","40.550130000932","-122.38092"
